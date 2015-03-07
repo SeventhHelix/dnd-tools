@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+
+<title>Starter Template for Bootstrap</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="icongrid/icongrid.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">D&D Tools</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">JSpellBook</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="jumbotron">
+        <h1>Setup</h1>
+
+        <div class="col-md-6">
+            Class: 
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
+                    <span data-bind="text: selectedClass"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: classes">
+                    <li role="presentation"><a role="menuitem" href="#" data-bind="text: $data, click: function(){$parent.selectedClass($data)}"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            Class: 
+            <span data-bind="text: selectedClass"></span>
+        </div>
+
+
+
+
+    </div>
+
+
+<div class="col-md-4">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
+                    Add spell to spellbook 
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: getFullSpellListByClass">
+                    <li role="presentation">
+                        <a role="menuitem" href="#" data-bind="text: $data.Name, click: function(){$parent.addSpellToSpellbook($data)}"></a>
+                    </li>
+                </ul>
+            </div>
+
+            <ul class=scrollable-menu" data-bind="foreach: spellbook">
+                <li>
+                    <a data-bind="text: $data.Name"></a>
+                </li>
+            </ul>
+
+            <div id="icongridSpellBook">
+            </div>
+</div>
+<div class="col-md-4">
+Mid
+</div>
+<div class="col-md-4">
+    Right spell slots
+</div>
+
+</div><!-- /.container -->
+
+
+<script type='text/javascript' src='https://code.jquery.com/jquery-2.1.3.js'></script>
+<script type='text/javascript' src='https://code.jquery.com/ui/1.11.3/jquery-ui.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
+<script type='text/javascript' src='icongrid/base32.js'></script>
+<script type='text/javascript' src='icongrid/icongrid.js'></script>
+<script type='text/javascript' src='util.js'></script>
+<script type='text/javascript' src='spelllist.js'></script>
+<script type='text/javascript' src='jbook.js'></script>
+</body>
+</html>
