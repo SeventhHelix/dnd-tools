@@ -1,6 +1,9 @@
 var JBookDataModel = function(){
     var self = this;
 
+    self.spellbookDash = {};
+    self.preparedSpellsDash = {};
+
     self.selectedClass = ko.observable("Wizard");
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
     self.selectClass = function(cl) {
@@ -13,14 +16,18 @@ var JBookDataModel = function(){
         if (spell.Name === "ALL") {
             $.each(self.getFullSpellListByClass(), function(index, value) {
                 self.spellbook.push(value.Name, value);
+                self.spellbookDash.addItemToGrid(value.Name, value);
             });
         }
         else {
             self.spellbook.push(spell.Name, spell);
+            self.spellbookDash.addItemToGrid(spell.Name, spell);
         }
 
 
-        // self.spellbook.remove('ALL');
+        self.spellbook.remove('ALL');
+
+
         //console.log(self.spellbook);
         console.log(self.spellbook.values()); 
     };
@@ -31,12 +38,13 @@ var JBookDataModel = function(){
         var list = self.spellbook;
 
         this.getItemList = function(callback) {
-            callback(list);
+            callback(list.values());
         };
 
         this.openItem = function(itemID) {
-            var title = list.get(itemID).Name;
-            console.log("Clicked on spell: " + title);
+            console.log(itemID);
+            var title = list.get(itemID)();
+            console.log("Clicked on spell: " + title.Name);
         };
 
         this.userRemovedItem = function(itemID, callback) {
@@ -49,12 +57,13 @@ var JBookDataModel = function(){
         // if all your items have 'itemImgURL' and 'itemTitle' properties, then you don't need to implement these.
         // These get called when an item doesn't have the right properties.
         // Note that you can pass in data URIs for icons
-        this.getitemimgurl = function(itemid) {
+        this.getItemImgURL = function(itemid) {
             return "foo.com";
         };
 
-        this.getitemtitle = function(itemid) {
-            return list.get(itemid).Name;
+        this.getItemTitle = function(itemID) {
+            console.log("asking for " + itemID);
+            return list.get(itemID)().Name;
         };
 
     };
@@ -84,18 +93,19 @@ var JBookDataModel = function(){
 
     self.initIconGrids = function() {
         var hostElement = $("#icongridSpellBook");
-        myLayout = new GridLayout(hostElement.width(), hostElement.height(), 3, 10);
-        myDash = new IconGrid("spellbook", hostElement, new self.spellbookIconGrid(), myLayout);
+        myLayout = new GridLayout(hostElement.width(), hostElement.height(), 3, 6);
+        //var myLayout = new GridLayout(300, 800, 3, 5);
+        self.spellbookDash = new IconGrid("spellbook", hostElement, new self.spellbookIconGrid(), myLayout);
 
-        myDash.initialize();
-        myDash.refresh();
+        self.spellbookDash.initialize();
+        self.spellbookDash.refresh();
     };
 
 
 };
 
 $(document).ready( function() {
-    var model = new JBookDataModel();
+    model = new JBookDataModel();
     model.initIconGrids();
     ko.applyBindings(model);
     console.log("ready");

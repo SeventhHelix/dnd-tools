@@ -3,3 +3,10 @@
     max-height: 200px;
     overflow-x: hidden;
 }
+
+.spellbookGridContainer {
+    /*width: 400px;*/
+    height: 700px;
+    border: solid 2px;
+    border-radius: 10px;
+}
