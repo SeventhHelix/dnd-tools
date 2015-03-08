@@ -7,20 +7,66 @@ var JBookDataModel = function(){
         self.selectedClass(cl);
     };
 
-    self.spellbook = ko.observableArray([]);
+    self.spellbook = ko.observableDictionary({});
     self.addSpellToSpellbook = function(spell) {
-        console.log("adding to spellbook");
+        console.log("adding spell " + spell.Name);
         if (spell.Name === "ALL") {
             $.each(self.getFullSpellListByClass(), function(index, value) {
-                if (value.Name !== "ALL") {
-                    self.spellbook.push(value);
-                }
+                self.spellbook.push(value.Name, value);
             });
         }
         else {
-            self.spellbook.push(spell);
+            self.spellbook.push(spell.Name, spell);
         }
+
+
+        // self.spellbook.remove('ALL');
+        //console.log(self.spellbook);
+        console.log(self.spellbook.values()); 
     };
+
+
+
+    self.spellbookIconGrid = function() {
+        var list = self.spellbook;
+
+        this.getItemList = function(callback) {
+            callback(list);
+        };
+
+        this.openItem = function(itemID) {
+            var title = list.get(itemID).Name;
+            console.log("Clicked on spell: " + title);
+        };
+
+        this.userRemovedItem = function(itemID, callback) {
+            delete list.remove(itemID);
+            if (callback){
+                callback(itemID);
+            }
+        };
+
+        // if all your items have 'itemImgURL' and 'itemTitle' properties, then you don't need to implement these.
+        // These get called when an item doesn't have the right properties.
+        // Note that you can pass in data URIs for icons
+        this.getitemimgurl = function(itemid) {
+            return "foo.com";
+        };
+
+        this.getitemtitle = function(itemid) {
+            return list.get(itemid).Name;
+        };
+
+    };
+
+
+
+
+
+
+
+
+
 
     self.getFullSpellListByClass = ko.computed(function() {
         var spells = [];
@@ -39,7 +85,7 @@ var JBookDataModel = function(){
     self.initIconGrids = function() {
         var hostElement = $("#icongridSpellBook");
         myLayout = new GridLayout(hostElement.width(), hostElement.height(), 3, 10);
-        myDash = new IconGrid("spellbook", hostElement, self.spellbook(), myLayout);
+        myDash = new IconGrid("spellbook", hostElement, new self.spellbookIconGrid(), myLayout);
 
         myDash.initialize();
         myDash.refresh();

@@ -79,9 +79,9 @@
                 </ul>
             </div>
 
-            <ul class=scrollable-menu" data-bind="foreach: spellbook">
+            <ul class=scrollable-menu" data-bind="foreach: spellbook.items">
                 <li>
-                    <a data-bind="text: $data.Name"></a>
+                    <a data-bind="text: key"></a>
                 </li>
             </ul>
 
@@ -102,6 +102,7 @@ Mid
 <script type='text/javascript' src='https://code.jquery.com/ui/1.11.3/jquery-ui.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
+<script type='text/javascript' src="https://rawgit.com/jamesfoster/knockout.observableDictionary/master/ko.observableDictionary.js"></script>
 <script type='text/javascript' src='icongrid/base32.js'></script>
 <script type='text/javascript' src='icongrid/icongrid.js'></script>
 <script type='text/javascript' src='util.js'></script>
