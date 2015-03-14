@@ -90,9 +90,79 @@
         <div id="icongridSpellBook" class="spellbookGridContainer dashboardclipper">
         </div>
 </div>
+
 <div class="col-md-4">
     Right spell slots
 </div>
+
+<div id="spellModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" data-bind="text: selectedSpell.get('Name')"></h4>
+      </div>
+      <div class="modal-body">
+          <dl class="dl-horizontal">
+              <dt>Name</dt>
+              <dd data-bind="text: selectedSpell.get('Name')"></dd>
+              <dt>Class</dt>
+              <dd data-bind="text: selectedSpell.get('Class')"></dd>
+              <dt class="advanced_info">SubClass</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('SubClass')"></dd>
+              <dt>Ritual</dt>
+              <dd data-bind="text: selectedSpell.get('Ritual')"></dd>
+              <dt>Concentration</dt>
+              <dd data-bind="text: selectedSpell.get('Concentration')"></dd>
+              <dt>Level</dt>
+              <dd data-bind="text: selectedSpell.get('Level')"></dd>
+              <dt>School</dt>
+              <dd data-bind="text: selectedSpell.get('School')"></dd>
+              <dt>Component</dt>
+              <dd data-bind="text: selectedSpell.get('Component')"></dd>
+              <dt>Material</dt>
+              <dd data-bind="text: selectedSpell.get('Material')"></dd>
+              <dt>Range</dt>
+              <dd data-bind="text: selectedSpell.get('Range')"></dd>
+              <dt>CastingTime</dt>
+              <dd data-bind="text: selectedSpell.get('CastingTime')"></dd>
+              <dt>Duration</dt>
+              <dd data-bind="text: selectedSpell.get('Duration')"></dd>
+              <dt>Description</dt>
+              <dd data-bind="text: selectedSpell.get('Description')"></dd>
+              <dt>HigherLevel</dt>
+              <dd data-bind="text: selectedSpell.get('HigherLevel')"></dd>
+              <dt>Effect</dt>
+              <dd data-bind="text: selectedSpell.get('Effect')"></dd>
+              <dt class="advanced_info">SaveStat</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('SaveStat')"></dd>
+              <dt class="advanced_info">SaveSuccess</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('SaveSuccess')"></dd>
+              <dt>HealAmount</dt>
+              <dd data-bind="text: selectedSpell.get('HealAmount')"></dd>
+              <dt>CritText</dt>
+              <dd data-bind="text: selectedSpell.get('CritText')"></dd>
+              <dt class="advanced_info">DamageStatBonus</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('DamageStatBonus')"></dd>
+              <dt class="advanced_info">DamageMiscBonus</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('DamageMiscBonus')"></dd>
+              <dt>DamageType</dt>
+              <dd data-bind="text: selectedSpell.get('DamageType')"></dd>
+              <dt>DamageKind</dt>
+              <dd data-bind="text: selectedSpell.get('DamageKind')"></dd>
+              <dt class="advanced_info">EffectClean</dt>
+              <dd class="advanced_info" data-bind="text: selectedSpell.get('EffectClean')"></dd>
+              <dt>TargetAoE</dt>
+              <dd data-bind="text: selectedSpell.get('TargetAoE')"></dd>
+          </dl>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-info" float="left" data-bind="click: advancedToggle">Advanced</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 </div><!-- /.container -->
 

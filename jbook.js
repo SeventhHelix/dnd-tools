@@ -1,8 +1,11 @@
 var JBookDataModel = function(){
     var self = this;
 
+    self.advanced = false;
+
     self.spellbookDash = {};
     self.preparedSpellsDash = {};
+    self.selectedSpell = ko.observableDictionary({});
 
     self.selectedClass = ko.observable("Wizard");
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
@@ -32,6 +35,20 @@ var JBookDataModel = function(){
         console.log(self.spellbook.values()); 
     };
 
+    self.advancedToggle = function() {
+        self.advanced = ! self.advanced;
+        if (self.advanced) {
+            $(".advanced_info").show();
+        }
+        else {
+            $(".advanced_info").hide();
+        }
+
+    };
+
+    self.showSpellModal = function() {
+        $("#spellModal").modal('show');
+    };
 
 
     self.spellbookIconGrid = function() {
@@ -43,8 +60,10 @@ var JBookDataModel = function(){
 
         this.openItem = function(itemID) {
             console.log(itemID);
-            var title = list.get(itemID)();
-            console.log("Clicked on spell: " + title.Name);
+            var spell = list.get(itemID)();
+            console.log("Clicked on spell: " + spell.Name);
+            self.selectedSpell.pushAll(spell);
+            self.showSpellModal();
         };
 
         this.userRemovedItem = function(itemID, callback) {
@@ -68,15 +87,6 @@ var JBookDataModel = function(){
 
     };
 
-
-
-
-
-
-
-
-
-
     self.getFullSpellListByClass = ko.computed(function() {
         var spells = [];
 
@@ -89,7 +99,6 @@ var JBookDataModel = function(){
         spells = sortByKey(spells, "Name");
         return spells;
     });
-
 
     self.initIconGrids = function() {
         var hostElement = $("#icongridSpellBook");
