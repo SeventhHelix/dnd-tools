@@ -1,54 +1,93 @@
 var JBookDataModel = function(){
     var self = this;
 
-    self.advanced = false;
+    self.advanced = ko.observable("");
 
     self.spellbookDash = {};
     self.preparedSpellsDash = {};
-    self.selectedSpell = ko.observableDictionary({});
 
+    self.spellbook = ko.observableDictionary({});
     self.selectedClass = ko.observable("Wizard");
+    self.selectedSpell = ko.observableDictionary({});
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
+
     self.selectClass = function(cl) {
         self.selectedClass(cl);
     };
 
-    self.spellbook = ko.observableDictionary({});
+    self.selectSpell = function(spell) {
+        self.selectedSpell.removeAll();
+        self.selectedSpell.pushAll(spell);
+    };
+
     self.addSpellToSpellbook = function(spell) {
-        console.log("adding spell " + spell.Name);
         if (spell.Name === "ALL") {
             $.each(self.getFullSpellListByClass(), function(index, value) {
-                self.spellbook.push(value.Name, value);
-                self.spellbookDash.addItemToGrid(value.Name, value);
+                if (value.Name != "ALL") {
+                    self.spellbook.push(value.Name, value);
+                    self.spellbookDash.addItemToGrid(value.Name, value);
+                }
             });
         }
         else {
-            self.spellbook.push(spell.Name, spell);
-            self.spellbookDash.addItemToGrid(spell.Name, spell);
+            if (value.Name != "ALL") {
+                self.spellbook.push(spell.Name, spell);
+                self.spellbookDash.addItemToGrid(spell.Name, spell);
+            }
         }
-
-
-        self.spellbook.remove('ALL');
-
-
-        //console.log(self.spellbook);
-        console.log(self.spellbook.values()); 
     };
 
-    self.advancedToggle = function() {
-        self.advanced = ! self.advanced;
-        if (self.advanced) {
-            $(".advanced_info").show();
-        }
-        else {
-            $(".advanced_info").hide();
-        }
 
+
+
+
+    self.info_all = ['Call', 'Name', 'Class', 'SubClass', 'Ritual', 'Concentration', 'Level', 'School', 'Component', 'Material', 
+        'Range', 'CastingTime', 'Duration', 'Description', 'HigherLevel', 'Effect', 'PowerCard', 'SaveStat', 'SaveSuccess', 
+        'HealAmount', 'CritText', 'DamageStatBonus', 'DamageMiscBonus', 'DamageType', 'DamageKind', 'EffectClean', 
+        'TargetAoE', 'SpellSlotLevel'];
+    self.info_advanced = ['SubClass', 'SaveStat', 'SaveSuccess', 'DamageStatBonus', 'DamageMiscBonus', 'EffectClean'];
+    self.info_ignore = ['Call', 'Effect', 'PowerCard', 'SpellSlotLevel'];
+
+    self.advancedToggle = function() {
+        self.advanced(self.advanced() ? "" : "true");
+        console.log("Advanced: " + self.advanced());
+    };
+
+    self.hideShowInfoCats = function() {
+        console.log("hiding/showing");
+        self.info_all.forEach(function(entry) {
+            var show = self.shouldShowInfoCat(entry);
+            if (show) {
+                $(".info_cat_"+entry).show();
+            }
+            else {
+                $(".info_cat_"+entry).hide();
+            }
+        });
+    };
+
+    self.advanced.subscribe(function() {
+        self.hideShowInfoCats();
+    });
+
+    self.shouldShowInfoCat = function(key) {
+        var show = true;
+        show = show && $.inArray(key, self.info_ignore)<0;
+        show = show && ($.inArray(key, self.info_advanced)<0 || self.advanced());
+        show = show && ($.inArray(self.selectedSpell.get(key)(), ['', '0', '.', 'None'])<0);
+        console.log(key);
+        console.log(self.selectedSpell.get(key)());
+        return show;
     };
 
     self.showSpellModal = function() {
+        self.hideShowInfoCats();
         $("#spellModal").modal('show');
     };
+
+
+
+
 
 
     self.spellbookIconGrid = function() {
@@ -62,7 +101,7 @@ var JBookDataModel = function(){
             console.log(itemID);
             var spell = list.get(itemID)();
             console.log("Clicked on spell: " + spell.Name);
-            self.selectedSpell.pushAll(spell);
+            self.selectSpell(spell);
             self.showSpellModal();
         };
 
@@ -110,12 +149,17 @@ var JBookDataModel = function(){
         self.spellbookDash.refresh();
     };
 
+    self.init = function() {
+        self.initIconGrids();
+        self.selectSpell(spelllist[1]);
+        self.hideShowInfoCats();
+    };
 
 };
 
 $(document).ready( function() {
     model = new JBookDataModel();
-    model.initIconGrids();
+    model.init();
     ko.applyBindings(model);
     console.log("ready");
 });
