@@ -9,14 +9,48 @@
     overflow-x: hidden;
 }
 
-.spellbookGridContainer {
+#spellbook-list-container,
+#prepared-spells-list-container {
     /*width: 400px;*/
-    height: 700px;
-    border: solid 2px;
-    border-radius: 10px;
+    height: 600px;
+    /*border: solid 2px;*/
+    /*border-radius: 10px;*/
+    overflow-y: auto;
 } 
 
 .modal .modal-body {
     max-height: 420px;
     overflow-y: auto;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li.placeholder {
+    border: 1px black dashed;
+}
+
+.left {
+    float: left
+}
+.right {
+    float: right
+}
+.clear {
+    clear: both
+}
+
+.panel-primary>.panel-heading {
+    height: 40px;
+}
+
+.side-margin {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.left-margin-big {
+    margin-left: 20px;
 }

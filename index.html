@@ -56,9 +56,12 @@
                     </ul>
                 </div>
 
-                <div>
+                <span>
                     Player level: <input data-bind="textInput: playerLevel" style="width: 40px"></input>
-                </div>
+                </span>
+                <span style="margin-left:50px">
+                    Max spell level: <input data-bind="textInput: maxSpellLevel" style="width: 40px"></input>
+                </span>
             </div>
         </div>
     </div>
@@ -78,16 +81,65 @@
     </div>
 
 
-    <div class="col-md-4">
-        <!--<div id="icongridSpellBook" class="spellbookGridContainer dashboardclipper"> </div>-->
-        <div id="icongridSpellBook" class=""> </div>
+    <div class="col-md-6">
+        <div id="spellbook-list-container">
+            <ul class="list" id="spellbook-list" data-bind="foreach: spellbook.items">
+                <li>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <span class="left clear" data-bind="text: key"></span>
+                        <span class="btn-group right" role="group">
+                            <button class="btn btn-danger" data-bind="click: function(){$parent.removeSpellFromSpellbook(value())}">
+                                <span class="right glyphicon glyphicon-remove"></span>
+                            </button>
+                            <button class="btn btn-success" data-bind="click: function(){$parent.selectAndPrepareSpell(value())}">
+                                <span class="right glyphicon glyphicon-plus"</span>
+                            </button>
+                            <button class="btn btn-info" data-bind="click: function(){$parent.selectSpell(value()); $parent.showSpellModal()}">
+                                <span class="right glyphicon glyphicon-asterisk"> </span>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <span data-bind="text: value().Description.substring(0, 100)+'...'"></span>
+                    </div>
+                </div>
+                </li>
+            </ul>
+        </div>
     </div>
 
-    <div class="col-md-4 ">
-        <div id="icongridPrepared" class="spellbookGridContainer dashboardclipper"> </div>
+    <div class="col-md-6 ">
+        <div id="prepared-spells-list-container">
+            <ul class="list" id="prepared-list" data-bind="foreach: preparedSpells.items">
+                <li>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+<!--<span class="left glyphicon glyphicon-minus"></span>-->
+                        <span class="left" data-bind="text: key"></span><span class="left side-margin left-margin-big">* </span>
+                        <span class="left " data-bind="text: value().School"></span><span class="left side-margin"> - </span>
+                        <span class="left " data-bind="text: value().Component"></span><span class="left side-margin"> - </span>
+                        <span class="left " data-bind="text: value().CastingTime"></span>
+                        <span class="btn-group right" role="group">
+                            <button class="btn btn-danger" data-bind="click: function(){$parent.removeSpellFromPrepared(value())}">
+                                <span class="right glyphicon glyphicon-remove"></span>
+                            </button>
+                            <button class="btn btn-info" data-bind="click: function(){$parent.selectSpell(value()); $parent.showSpellModal()}">
+                                <span class="right glyphicon glyphicon-asterisk"> </span>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <span data-bind="text: (value().Description || '').substring(0, 100)+'...'"></span>
+                        <!--<span data-bind="text: value.toJSON"></span>-->
+                    </div>
+                </div>
+                </li>
+            </ul>
+        </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-2">
         <!--Right spell slots-->
     </div>
 
@@ -102,11 +154,6 @@
                     <dl class="dl-horizontal" data-bind="foreach: selectedSpell.items">
                         <dt data-bind="text: key  , css: 'info_cat_'+key()"></dt>
                         <dd data-bind="text: value, css: 'info_cat_'+key()"></dd>
-                        <!--<dt>Class</dt>-->
-                        <!--<dd data-bind="text: selectedSpell.get('Class')"></dd>-->
-
-                        <!--<dt class="advanced_info">SubClass</dt>-->
-                        <!--<dd class="advanced_info" data-bind="text: selectedSpell.get('SubClass')"></dd>-->
                     </dl>
                 </div>
                 <div class="modal-footer">
@@ -126,8 +173,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
 <script type='text/javascript' src="https://rawgit.com/jamesfoster/knockout.observableDictionary/master/ko.observableDictionary.js"></script>
-<script type='text/javascript' src='icongrid/base32.js'></script>
-<script type='text/javascript' src='icongrid/icongrid.js'></script>
+<script type='text/javascript' src='touch-dnd.js'></script>
 <script type='text/javascript' src='util.js'></script>
 <script type='text/javascript' src='spelllist.js'></script>
 <script type='text/javascript' src='jbook.js'></script>

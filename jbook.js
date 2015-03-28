@@ -3,13 +3,11 @@ var JBookDataModel = function(){
 
     self.advanced = ko.observable("");
 
-    self.spellbookDash = {};
-    self.preparedSpellsDash = {};
-
     self.spellbook = ko.observableDictionary({});
     self.preparedSpells = ko.observableDictionary({});
     self.selectedClass = ko.observable("Wizard");
     self.playerLevel = ko.observable("1");
+    self.maxSpellLevel = ko.observable("1");
     self.selectedSpell = ko.observableDictionary({});
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
 
@@ -18,39 +16,53 @@ var JBookDataModel = function(){
     };
 
     self.selectSpell = function(spell) {
+        console.log(self.selectedSpell.toJSON());
         self.selectedSpell.removeAll();
+        console.log(self.selectedSpell.toJSON());
         self.selectedSpell.pushAll(spell);
+        console.log(self.selectedSpell.toJSON());
     };
 
     self.addSpellToSpellbook = function(spell) {
         if (spell.Name === "ALL") {
             $.each(self.getFullSpellListByClass(), function(index, value) {
                 if (value.Name != "ALL") {
-                    self.spellbook.push(value.Name, value);
-                    self.spellbookDash.addItemToGrid(value.Name, value);
+                    if (value.Level <= self.maxSpellLevel()) {
+                        self.spellbook.push(value.Name, value);
+                    }
                 }
             });
         }
         else {
-            self.spellbook.push(spell.Name, spell);
-            self.spellbookDash.addItemToGrid(spell.Name, spell);
-
-            //console.log(self.preparedSpellsDash);
-            self.preparedSpells.push(spell.Name, spell);
-            self.preparedSpellsDash.addItemToGrid(spell.Name, spell);
+            if (spell.Level <= self.maxSpellLevel()) {
+                self.spellbook.push(spell.Name, spell);
+            }
         }
-        self.showall();
     };
 
     self.prepareSelectedSpell = function() {
         var spell = self.selectedSpell;
-        console.log(spell);
-        console.log(spell.get('Name')());
-        console.log("preparing " + spell.get('Name')());
-        self.preparedSpells.push(spell.get('Name')(), spell);
-        self.preparedSpellsDash.addItemToGrid(spell.get('Name')(), spell);
+        self.preparedSpells.push(spell.get('Name'), spell);
+    };
 
-        self.showall();
+
+    self.prepareSpell = function(spell) {
+        self.preparedSpells.push(spell.Name, spell);
+    };
+
+    self.selectAndPrepareSpell = function(spell) {
+        console.log("Selecting and preparing");
+        console.log(spell);
+        self.selectSpell(spell);
+        self.prepareSpell(spell);
+    };
+
+    self.removeSpellFromSpellbook = function(spell) {
+        self.spellbook.remove(spell.Name);
+    };
+
+    self.removeSpellFromPrepared = function(spell) {
+        self.preparedSpells.remove(spell.Name);
     };
 
 
@@ -81,15 +93,6 @@ var JBookDataModel = function(){
     };
 
     self.showall = function() {
-        //console.log(self.selectedSpell.values());
-        //console.log(self.preparedSpellsDash);
-        //console.log(self.spellbookDash);
-        //console.log(self.preparedSpells.keys());
-        //console.log(self.spellbook.keys());
-        //console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-        //self.spellbookDash.refresh();
-        //self.preparedSpellsDash.refresh();
     };
 
     self.advanced.subscribe(function() {
@@ -110,49 +113,6 @@ var JBookDataModel = function(){
     };
 
 
-
-
-
-
-    self.spellIconGrid = function(source) {
-        var me = this;
-        me.list = source;
-
-        this.getItemList = function(callback) {
-            callback(me.list.values());
-        };
-
-        this.openItem = function(itemID) {
-            //console.log("Asking for " + itemID + "from " + me.dashname);
-            var spell = me.list.get(itemID)();
-            console.log("Clicked on spell: " + spell.Name + " from ID " + itemID);
-            self.selectSpell(spell);
-            self.showSpellModal();
-            self.showall();
-        };
-
-        this.userRemovedItem = function(itemID, callback) {
-            delete me.list.remove(itemID);
-            if (callback){
-                callback(itemID);
-            }
-        };
-
-        // if all your items have 'itemImgURL' and 'itemTitle' properties, then you don't need to implement these.
-        // These get called when an item doesn't have the right properties.
-        // Note that you can pass in data URIs for icons
-        this.getItemImgURL = function(itemid) {
-            return "foo.com";
-        };
-
-        this.getItemTitle = function(itemID) {
-            console.log("Getting item title for " + itemID);
-            console.log(me.list.keys());
-            return me.list.get(itemID)().Name;
-        };
-
-    };
-
     self.getFullSpellListByClass = ko.computed(function() {
         var spells = [];
 
@@ -166,24 +126,14 @@ var JBookDataModel = function(){
         return spells;
     });
 
-    self.initIconGrids = function() {
-        var sbHostElement = $("#icongridSpellBook");
-        var sbLayout = new GridLayout(sbHostElement.width(), sbHostElement.height(), 3, 6);
-        self.spellbookDash = new IconGrid("spellbook", sbHostElement, new self.spellIconGrid(self.spellbook), sbLayout);
-
-        var pHostElement = $("#icongridPrepared");
-        var pLayout = new GridLayout(pHostElement.width(), pHostElement.height(), 3, 6);
-        self.preparedSpellsDash = new IconGrid("prepared", pHostElement, new self.spellIconGrid(self.preparedSpells), pLayout);
-
-        self.spellbookDash.initialize();
-        self.preparedSpellsDash.initialize();
-
-        self.spellbookDash.refresh();
-        self.preparedSpellsDash.refresh();
+    self.initSortable = function() {
+        $("#spellbook-list").sortable({items: '> li', forcePlaceholderSize: true});
+        $("#prepared-list").sortable({items: '> li', forcePlaceholderSize: true});
     };
 
+
     self.init = function() {
-        self.initIconGrids();
+        self.initSortable();
         self.selectSpell(spelllist[1]);
         self.hideShowInfoCats();
     };
