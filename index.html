@@ -12,7 +12,6 @@
 
 <!-- Bootstrap core CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="icongrid/icongrid.css">
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -44,7 +43,7 @@
             <h2>Setup</h2>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-10">
             <div style="padding-top: 20px">
                 <div class="dropdown" style="float: left; padding-right: 40px">
                     <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
@@ -61,6 +60,15 @@
                 </span>
                 <span style="margin-left:50px">
                     Max spell level: <input data-bind="textInput: maxSpellLevel" style="width: 40px"></input>
+                </span>
+
+                <span class="btn-group right" role="group">
+                    <button class="btn btn-default" data-bind="click: function(){save()}">
+                        <span class="right glyphicon glyphicon-download"></span>
+                    </button>
+                    <button class="btn btn-default" data-bind="click: function(){showLoadModal()}">
+                        <span class="right glyphicon glyphicon-upload"></span>
+                    </button>
                 </span>
             </div>
         </div>
@@ -87,7 +95,10 @@
                 <li>
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <span class="left clear" data-bind="text: key"></span>
+                        <span class="left" data-bind="text: key"></span><span class="left side-margin left-margin-big">* </span>
+                        <span class="left " data-bind="text: value().School"></span><span class="left side-margin"> - </span>
+                        <span class="left " data-bind="text: value().Component"></span><span class="left side-margin"> - </span>
+                        <span class="left " data-bind="text: value().CastingTime"></span>
                         <span class="btn-group right" role="group">
                             <button class="btn btn-danger" data-bind="click: function(){$parent.removeSpellFromSpellbook(value())}">
                                 <span class="right glyphicon glyphicon-remove"></span>
@@ -101,7 +112,7 @@
                         </span>
                     </div>
                     <div class="panel-body">
-                        <span data-bind="text: value().Description.substring(0, 250)+'...'"></span>
+                        <span data-bind="text: value().Description.substring(0, 200)+'...'"></span>
                     </div>
                 </div>
                 </li>
@@ -130,7 +141,7 @@
                         </span>
                     </div>
                     <div class="panel-body">
-                        <span data-bind="text: (value().Description || '').substring(0, 100)+'...'"></span>
+                        <span data-bind="text: (value().Description || '').substring(0, 200)+'...'"></span>
                         <!--<span data-bind="text: value.toJSON"></span>-->
                     </div>
                 </div>
@@ -165,6 +176,30 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <div id="loadModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Load Spellbook</h4>
+                </div>
+                <div class="modal-body">
+                    Copy and paste your .jbk file contents here
+                    <div>
+                        <input id="load-input" class="form-control" type="text" placeholder='{"spellbook":{"Acid Splash":{"Call":"acid_splash","Name":"Acid Splash", ....' data-bind="inputText: loadText">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bind="click: function(){load()}">
+                        Load
+                        <span class="glyphicon glyphicon-upload"></span>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </div><!-- /.container -->
 
 
@@ -174,6 +209,7 @@
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js'></script>
 <script type='text/javascript' src="https://rawgit.com/jamesfoster/knockout.observableDictionary/master/ko.observableDictionary.js"></script>
 <script type='text/javascript' src='touch-dnd.js'></script>
+<script type='text/javascript' src='FileSaver.js'></script>
 <script type='text/javascript' src='util.js'></script>
 <script type='text/javascript' src='spelllist.js'></script>
 <script type='text/javascript' src='jbook.js'></script>

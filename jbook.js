@@ -9,6 +9,7 @@ var JBookDataModel = function(){
     self.playerLevel = ko.observable("1");
     self.maxSpellLevel = ko.observable("1");
     self.selectedSpell = ko.observableDictionary({});
+    self.loadText = ko.observable("");
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
 
     self.selectClass = function(cl) {
@@ -112,6 +113,15 @@ var JBookDataModel = function(){
         $("#spellModal").modal('show');
     };
 
+    self.showLoadModal = function() {
+        self.hideShowInfoCats();
+        $("#loadModal").modal('show');
+    };
+
+    self.hideModals = function() {
+        $(".modal").modal('hide');
+    };
+
 
     self.getFullSpellListByClass = ko.computed(function() {
         var spells = [];
@@ -131,13 +141,32 @@ var JBookDataModel = function(){
         $("#prepared-list").sortable({items: '> li', forcePlaceholderSize: true});
     };
 
+    self.save = function() {
+        var text = JSON.stringify({spellbook: self.spellbook.toJSON(), prepared: self.preparedSpells.toJSON()});
+        var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "spellbook.jbk");
+    };
+
+    self.load = function() {
+        var input = $("#load-input");
+        var jbk = $.parseJSON(input.val());
+
+        $.each(jbk.spellbook, function(index, element) {
+            self.addSpellToSpellbook(element);
+        });
+
+        $.each(jbk.prepared, function(index, element) {
+            self.prepareSpell(element);
+        });
+        self.hideModals();
+        input.val("");
+    };
 
     self.init = function() {
         self.initSortable();
         self.selectSpell(spelllist[1]);
         self.hideShowInfoCats();
     };
-
 };
 
 $(document).ready( function() {
