@@ -7,7 +7,9 @@ var JBookDataModel = function(){
     self.preparedSpellsDash = {};
 
     self.spellbook = ko.observableDictionary({});
+    self.preparedSpells = ko.observableDictionary({});
     self.selectedClass = ko.observable("Wizard");
+    self.playerLevel = ko.observable("1");
     self.selectedSpell = ko.observableDictionary({});
     self.classes = ko.observableArray(["Sorcerer", "Wizard", "Bard", "Warlock", "Paladin", "Cleric", "Druid", "Monk"]);
 
@@ -30,11 +32,25 @@ var JBookDataModel = function(){
             });
         }
         else {
-            if (value.Name != "ALL") {
-                self.spellbook.push(spell.Name, spell);
-                self.spellbookDash.addItemToGrid(spell.Name, spell);
-            }
+            self.spellbook.push(spell.Name, spell);
+            self.spellbookDash.addItemToGrid(spell.Name, spell);
+
+            //console.log(self.preparedSpellsDash);
+            self.preparedSpells.push(spell.Name, spell);
+            self.preparedSpellsDash.addItemToGrid(spell.Name, spell);
         }
+        self.showall();
+    };
+
+    self.prepareSelectedSpell = function() {
+        var spell = self.selectedSpell;
+        console.log(spell);
+        console.log(spell.get('Name')());
+        console.log("preparing " + spell.get('Name')());
+        self.preparedSpells.push(spell.get('Name')(), spell);
+        self.preparedSpellsDash.addItemToGrid(spell.get('Name')(), spell);
+
+        self.showall();
     };
 
 
@@ -45,16 +61,14 @@ var JBookDataModel = function(){
         'Range', 'CastingTime', 'Duration', 'Description', 'HigherLevel', 'Effect', 'PowerCard', 'SaveStat', 'SaveSuccess', 
         'HealAmount', 'CritText', 'DamageStatBonus', 'DamageMiscBonus', 'DamageType', 'DamageKind', 'EffectClean', 
         'TargetAoE', 'SpellSlotLevel'];
-    self.info_advanced = ['SubClass', 'SaveStat', 'SaveSuccess', 'DamageStatBonus', 'DamageMiscBonus', 'EffectClean'];
+    self.info_advanced = ['SubClass', 'SaveStat', 'SaveSuccess', 'DamageType', 'DamageKind', 'CritText', 'DamageStatBonus', 'DamageMiscBonus', 'EffectClean'];
     self.info_ignore = ['Call', 'Effect', 'PowerCard', 'SpellSlotLevel'];
 
     self.advancedToggle = function() {
         self.advanced(self.advanced() ? "" : "true");
-        console.log("Advanced: " + self.advanced());
     };
 
     self.hideShowInfoCats = function() {
-        console.log("hiding/showing");
         self.info_all.forEach(function(entry) {
             var show = self.shouldShowInfoCat(entry);
             if (show) {
@@ -66,6 +80,18 @@ var JBookDataModel = function(){
         });
     };
 
+    self.showall = function() {
+        //console.log(self.selectedSpell.values());
+        //console.log(self.preparedSpellsDash);
+        //console.log(self.spellbookDash);
+        //console.log(self.preparedSpells.keys());
+        //console.log(self.spellbook.keys());
+        //console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+        //self.spellbookDash.refresh();
+        //self.preparedSpellsDash.refresh();
+    };
+
     self.advanced.subscribe(function() {
         self.hideShowInfoCats();
     });
@@ -75,8 +101,6 @@ var JBookDataModel = function(){
         show = show && $.inArray(key, self.info_ignore)<0;
         show = show && ($.inArray(key, self.info_advanced)<0 || self.advanced());
         show = show && ($.inArray(self.selectedSpell.get(key)(), ['', '0', '.', 'None'])<0);
-        console.log(key);
-        console.log(self.selectedSpell.get(key)());
         return show;
     };
 
@@ -90,23 +114,25 @@ var JBookDataModel = function(){
 
 
 
-    self.spellbookIconGrid = function() {
-        var list = self.spellbook;
+    self.spellIconGrid = function(source) {
+        var me = this;
+        me.list = source;
 
         this.getItemList = function(callback) {
-            callback(list.values());
+            callback(me.list.values());
         };
 
         this.openItem = function(itemID) {
-            console.log(itemID);
-            var spell = list.get(itemID)();
-            console.log("Clicked on spell: " + spell.Name);
+            //console.log("Asking for " + itemID + "from " + me.dashname);
+            var spell = me.list.get(itemID)();
+            console.log("Clicked on spell: " + spell.Name + " from ID " + itemID);
             self.selectSpell(spell);
             self.showSpellModal();
+            self.showall();
         };
 
         this.userRemovedItem = function(itemID, callback) {
-            delete list.remove(itemID);
+            delete me.list.remove(itemID);
             if (callback){
                 callback(itemID);
             }
@@ -120,8 +146,9 @@ var JBookDataModel = function(){
         };
 
         this.getItemTitle = function(itemID) {
-            console.log("asking for " + itemID);
-            return list.get(itemID)().Name;
+            console.log("Getting item title for " + itemID);
+            console.log(me.list.keys());
+            return me.list.get(itemID)().Name;
         };
 
     };
@@ -140,13 +167,19 @@ var JBookDataModel = function(){
     });
 
     self.initIconGrids = function() {
-        var hostElement = $("#icongridSpellBook");
-        myLayout = new GridLayout(hostElement.width(), hostElement.height(), 3, 6);
-        //var myLayout = new GridLayout(300, 800, 3, 5);
-        self.spellbookDash = new IconGrid("spellbook", hostElement, new self.spellbookIconGrid(), myLayout);
+        var sbHostElement = $("#icongridSpellBook");
+        var sbLayout = new GridLayout(sbHostElement.width(), sbHostElement.height(), 3, 6);
+        self.spellbookDash = new IconGrid("spellbook", sbHostElement, new self.spellIconGrid(self.spellbook), sbLayout);
+
+        var pHostElement = $("#icongridPrepared");
+        var pLayout = new GridLayout(pHostElement.width(), pHostElement.height(), 3, 6);
+        self.preparedSpellsDash = new IconGrid("prepared", pHostElement, new self.spellIconGrid(self.preparedSpells), pLayout);
 
         self.spellbookDash.initialize();
+        self.preparedSpellsDash.initialize();
+
         self.spellbookDash.refresh();
+        self.preparedSpellsDash.refresh();
     };
 
     self.init = function() {
@@ -161,5 +194,4 @@ $(document).ready( function() {
     model = new JBookDataModel();
     model.init();
     ko.applyBindings(model);
-    console.log("ready");
 });

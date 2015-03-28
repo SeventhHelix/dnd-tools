@@ -40,86 +40,83 @@
 <div class="container">
 
     <div class="jumbotron">
-        <h1>Setup</h1>
+        <div class="col-md-2">
+            <h2>Setup</h2>
+        </div>
 
         <div class="col-md-6">
-            Class: 
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
-                    <span data-bind="text: selectedClass"></span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: classes">
-                    <li role="presentation"><a role="menuitem" href="#" data-bind="text: $data, click: function(){$parent.selectedClass($data)}"></a></li>
-                </ul>
+            <div style="padding-top: 20px">
+                <div class="dropdown" style="float: left; padding-right: 40px">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
+                        <span data-bind="text: selectedClass"></span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: classes">
+                        <li role="presentation"><a role="menuitem" href="#" data-bind="text: $data, click: function(){$parent.selectedClass($data)}"></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    Player level: <input data-bind="textInput: playerLevel" style="width: 40px"></input>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div>
-            Class: 
-            <span data-bind="text: selectedClass"></span>
+    <div class="col-md-12" style="padding-bottom:20px">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
+                Add spell to spellbook 
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: getFullSpellListByClass">
+                <li role="presentation">
+                <a role="menuitem" href="#" data-bind="text: $data.Name, click: function(){$parent.addSpellToSpellbook($data)}"></a>
+                </li>
+            </ul>
         </div>
-
-
-
-
     </div>
 
 
-<div class="col-md-4">
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="classDropdownmenu" data-toggle="dropdown" aria-expanded="true">
-                    Add spell to spellbook 
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="dropdownMenu1" data-bind="foreach: getFullSpellListByClass">
-                    <li role="presentation">
-                        <a role="menuitem" href="#" data-bind="text: $data.Name, click: function(){$parent.addSpellToSpellbook($data)}"></a>
-                    </li>
-                </ul>
-            </div>
+    <div class="col-md-4">
+        <!--<div id="icongridSpellBook" class="spellbookGridContainer dashboardclipper"> </div>-->
+        <div id="icongridSpellBook" class=""> </div>
+    </div>
 
-            <ul class=scrollable-menu" data-bind="foreach: spellbook.items">
-                <li>
-                    <a data-bind="text: key"></a>
-                </li>
-            </ul>
+    <div class="col-md-4 ">
+        <div id="icongridPrepared" class="spellbookGridContainer dashboardclipper"> </div>
+    </div>
 
-</div>
-<div class="col-md-4 ">
-        <div id="icongridSpellBook" class="spellbookGridContainer dashboardclipper">
-        </div>
-</div>
+    <div class="col-md-4">
+        <!--Right spell slots-->
+    </div>
 
-<div class="col-md-4">
-    Right spell slots
-</div>
+    <div id="spellModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" data-bind="text: selectedSpell.get('Name')"></h4>
+                </div>
+                <div class="modal-body">
+                    <dl class="dl-horizontal" data-bind="foreach: selectedSpell.items">
+                        <dt data-bind="text: key  , css: 'info_cat_'+key()"></dt>
+                        <dd data-bind="text: value, css: 'info_cat_'+key()"></dd>
+                        <!--<dt>Class</dt>-->
+                        <!--<dd data-bind="text: selectedSpell.get('Class')"></dd>-->
 
-<div id="spellModal" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" data-bind="text: selectedSpell.get('Name')"></h4>
-      </div>
-      <div class="modal-body">
-          <dl class="dl-horizontal" data-bind="foreach: selectedSpell.items">
-              <dt data-bind="text: key  , css: 'info_cat_'+key()"></dt>
-              <dd data-bind="text: value, css: 'info_cat_'+key()"></dd>
-              <!--<dt>Class</dt>-->
-              <!--<dd data-bind="text: selectedSpell.get('Class')"></dd>-->
-
-              <!--<dt class="advanced_info">SubClass</dt>-->
-              <!--<dd class="advanced_info" data-bind="text: selectedSpell.get('SubClass')"></dd>-->
-          </dl>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-info" style="float: left" data-bind="click: advancedToggle">Simple/Advanced</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+                        <!--<dt class="advanced_info">SubClass</dt>-->
+                        <!--<dd class="advanced_info" data-bind="text: selectedSpell.get('SubClass')"></dd>-->
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click: prepareSelectedSpell">Prepare</button>
+                    <button type="button" class="btn btn-info" style="float: left" data-bind="click: advancedToggle">Simple/Advanced</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div><!-- /.container -->
 

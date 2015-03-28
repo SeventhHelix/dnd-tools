@@ -1,3 +1,8 @@
+.jumbotron {
+    height: 120px
+}
+
+
 .scrollable-menu {
     height: auto;
     max-height: 200px;
